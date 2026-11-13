@@ -1,0 +1,121 @@
+{
+  "info": {
+    "_postman_id": "c4791a82-e87f-4b00-8809-whatsapp-gw",
+    "name": "WhatsApp Cloud API Gateway API Collection",
+    "description": "Complete test suite for Meta WhatsApp Cloud API Gateway including webhook challenge verification, inbound message simulation, and interactive outbound messages.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "System Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/health",
+          "host": ["{{base_url}}"],
+          "path": ["health"]
+        }
+      }
+    },
+    {
+      "name": "Webhook - Meta Challenge Verification (GET)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/webhook?hub.mode=subscribe&hub.verify_token={{verify_token}}&hub.challenge=1158201444",
+          "host": ["{{base_url}}"],
+          "path": ["webhook"],
+          "query": [
+            { "key": "hub.mode", "value": "subscribe" },
+            { "key": "hub.verify_token", "value": "{{verify_token}}" },
+            { "key": "hub.challenge", "value": "1158201444" }
+          ]
+        }
+      }
+    },
+    {
+      "name": "Webhook - Simulate Inbound Text Message (POST)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"object\": \"whatsapp_business_account\",\n  \"entry\": [\n    {\n      \"id\": \"1029384756\",\n      \"changes\": [\n        {\n          \"value\": {\n            \"messaging_product\": \"whatsapp\",\n            \"metadata\": {\n              \"display_phone_number\": \"15550234567\",\n              \"phone_number_id\": \"109876543210987\"\n            },\n            \"messages\": [\n              {\n                \"from\": \"919876543210\",\n                \"id\": \"wamid.HBgLOTE5ODc2NTQzMjEwFQIAEhgWM0VCMDFCRjQ1OTA5QzJEQTkyNTg2NAA=\",\n                \"timestamp\": \"1700000000\",\n                \"text\": {\n                  \"body\": \"Hi, I would like to schedule a product demo.\"\n                },\n                \"type\": \"text\"\n              }\n            ]\n          },\n          \"field\": \"messages\"\n        }\n      ]\n    }\n  ]\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/webhook",
+          "host": ["{{base_url}}"],
+          "path": ["webhook"]
+        }
+      }
+    },
+    {
+      "name": "Outbound - Send Text Message",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"to\": \"919876543210\",\n  \"message\": \"Thank you for contacting us! Our solutions team will connect with you shortly.\",\n  \"preview_url\": false\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/messages/text",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "messages", "text"]
+        }
+      }
+    },
+    {
+      "name": "Outbound - Send Quick Reply Buttons",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"to\": \"919876543210\",\n  \"body_text\": \"Please choose an option to route your inquiry:\",\n  \"buttons\": [\n    { \"id\": \"btn_demo\", \"title\": \"Book Demo\" },\n    { \"id\": \"btn_pricing\", \"title\": \"View Pricing\" },\n    { \"id\": \"btn_support\", \"title\": \"Talk to Support\" }\n  ]\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/messages/quick-replies",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "messages", "quick-replies"]
+        }
+      }
+    },
+    {
+      "name": "Outbound - Send Interactive List Menu",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"to\": \"919876543210\",\n  \"header_text\": \"Solutions Catalog\",\n  \"body_text\": \"Select your industry vertical to explore relevant conversational workflows:\",\n  \"button_label\": \"Select Industry\",\n  \"footer_text\": \"Enterprise Conversational CX\",\n  \"sections\": [\n    {\n      \"title\": \"Enterprise Verticals\",\n      \"rows\": [\n        { \"id\": \"sec_bfsi\", \"title\": \"BFSI & FinTech\", \"description\": \"KYC, alerts & loan workflows\" },\n        { \"id\": \"sec_retail\", \"title\": \"Retail & E-commerce\", \"description\": \"Cart recovery & order updates\" },\n        { \"id\": \"sec_realestate\", \"title\": \"Real Estate\", \"description\": \"Site visit scheduling & leads\" }\n      ]\n    }\n  ]\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/v1/messages/list",
+          "host": ["{{base_url}}"],
+          "path": ["api", "v1", "messages", "list"]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000"
+    },
+    {
+      "key": "verify_token",
+      "value": "default_secure_verification_token"
+    }
+  ]
+}
