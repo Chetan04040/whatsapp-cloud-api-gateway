@@ -1,6 +1,21 @@
 import os
-from pydantic_settings import BaseSettings
 from functools import lru_cache
+
+# Attempt to load .env file if python-dotenv is present
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
+
+# Try importing BaseSettings from pydantic_settings, fallback to BaseModel if not installed
+try:
+    from pydantic_settings import BaseSettings
+except ImportError:
+    try:
+        from pydantic import BaseSettings
+    except ImportError:
+        from pydantic import BaseModel as BaseSettings
 
 
 class Settings(BaseSettings):
